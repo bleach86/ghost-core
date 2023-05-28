@@ -71,6 +71,11 @@ jobs:
       - name: install dependencies
         run: HOMEBREW_NO_AUTO_UPDATE=1 brew install automake libtool boost miniupnpc pkg-config python qt@5 libevent qrencode protobuf hidapi librsvg sqlite berkeley-db4
   
+      - name: Set Enviroment Vars
+        env:
+          LDFLAGS: -L/usr/local/opt/berkeley-db@4/lib
+          CPPFLAGS: -I/usr/local/opt/berkeley-db@4/include
+      
       - name: Refresh automake configs
         run: ./autogen.sh
 
