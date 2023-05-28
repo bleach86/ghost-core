@@ -74,7 +74,7 @@ jobs:
         uses: devbotsxyz/xcode-select@v1.1.0
         with:
           # Version to use (like '11.7', '12' or simply 'latest')
-          version: 12.1
+          version: 12.4
           
       - name: install dependencies
         run: HOMEBREW_NO_AUTO_UPDATE=1 brew install automake libtool boost miniupnpc pkg-config python qt@5 libevent qrencode protobuf hidapi librsvg sqlite berkeley-db4
