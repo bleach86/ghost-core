@@ -81,12 +81,12 @@ jobs:
       
       - name: Refresh automake configs
         env:
-          LDFLAGS: -L/usr/local/opt/berkeley-db@4/lib
-          CPPFLAGS: -I/usr/local/opt/berkeley-db@4/include
+          LDFLAGS: "-L/usr/local/opt/berkeley-db@4/lib"
+          CPPFLAGS: "-I/usr/local/opt/berkeley-db@4/include"
         run: ./autogen.sh
 
       - name: Configure automake
-        run: ./configure --prefix=`pwd`/depends/${{ runner.os }} --with-gui=auto
+        run: ./configure --with-gui=auto
 
       - name: Build codebase
         run: make -j4
