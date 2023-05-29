@@ -20,7 +20,6 @@ fs::path GetWalletDir()
 
     if (gArgs.IsArgSet("-walletdir")) {
         path = gArgs.GetArg("-walletdir", "");
-        path = path.has_filename() ? path : path.parent_path();
         if (!fs::is_directory(path)) {
             // If the path specified doesn't exist, we return the deliberately
             // invalid empty string.
@@ -34,7 +33,7 @@ fs::path GetWalletDir()
         }
     }
 
-    return path;
+    return path.has_filename() ? path : path.parent_path();
 }
 
 std::vector<fs::path> ListWalletDir()
