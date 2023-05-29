@@ -20,6 +20,7 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_default)
     bool result = m_wallet_client->verify();
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
+    walletdir = walletdir.has_filename()? walletdir : walletdir.parent_path();
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["default"]);
     std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
     std::cout << "EXPECTED PATH=" << expected_path << "\n";
@@ -32,6 +33,7 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_custom)
     bool result = m_wallet_client->verify();
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
+    walletdir = walletdir.has_filename()? walletdir : walletdir.parent_path();
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["custom"]);
     std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
     std::cout << "EXPECTED PATH=" << expected_path << "\n";
@@ -74,6 +76,7 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_no_trailing)
     bool result = m_wallet_client->verify();
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
+    walletdir = walletdir.has_filename()? walletdir : walletdir.parent_path();
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["default"]);
     std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
     std::cout << "EXPECTED PATH=" << expected_path << "\n";
@@ -86,6 +89,7 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_no_trailing2)
     bool result = m_wallet_client->verify();
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
+    walletdir = walletdir.has_filename()? walletdir : walletdir.parent_path();
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["default"]);
     std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
     std::cout << "EXPECTED PATH=" << expected_path << "\n";
