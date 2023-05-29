@@ -9,6 +9,8 @@
 #include <test/util/setup_common.h>
 #include <util/system.h>
 #include <wallet/test/init_test_fixture.h>
+#include <cstdio>
+
 
 BOOST_FIXTURE_TEST_SUITE(init_tests, InitWalletDirTestingSetup)
 
@@ -19,6 +21,8 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_default)
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["default"]);
+    std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
+    std::cout << "EXPECTED PATH=" << expected_path << "\n";
     BOOST_CHECK(walletdir == expected_path);
 }
 
@@ -29,6 +33,8 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_custom)
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["custom"]);
+    std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
+    std::cout << "EXPECTED PATH=" << expected_path << "\n";
     BOOST_CHECK(walletdir == expected_path);
 }
 
@@ -69,6 +75,8 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_no_trailing)
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["default"]);
+    std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
+    std::cout << "EXPECTED PATH=" << expected_path << "\n";
     BOOST_CHECK(walletdir == expected_path);
 }
 
@@ -79,6 +87,8 @@ BOOST_AUTO_TEST_CASE(walletinit_verify_walletdir_no_trailing2)
     BOOST_CHECK(result == true);
     fs::path walletdir = gArgs.GetArg("-walletdir", "");
     fs::path expected_path = fs::canonical(m_walletdir_path_cases["default"]);
+    std::cout << "WALLET DIR VALUE=" << walletdir << "\n";
+    std::cout << "EXPECTED PATH=" << expected_path << "\n";
     BOOST_CHECK(walletdir == expected_path);
 }
 
