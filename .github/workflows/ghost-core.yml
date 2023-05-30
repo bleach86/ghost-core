@@ -24,7 +24,7 @@ jobs:
      
      
       - name: Set Openssl to 1.1
-        run: brew switch openssl@1.1 1.1.1f && openssl version
+        run: brew link openssl@1.1 1.1.1f && openssl version
       
       - name: install dependencies
         run: HOMEBREW_NO_AUTO_UPDATE=1 brew install automake libtool boost miniupnpc pkg-config python qt libevent qrencode protobuf hidapi librsvg sqlite berkeley-db@4  
