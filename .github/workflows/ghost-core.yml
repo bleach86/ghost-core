@@ -24,7 +24,7 @@ jobs:
      
      
       - name: Set Openssl to 1.1
-        run: brew link openssl@1.1 && openssl version
+        run: echo 'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"' >> /Users/runner/.bash_profile && openssl version
       
       - name: install dependencies
         run: HOMEBREW_NO_AUTO_UPDATE=1 brew install automake libtool boost miniupnpc pkg-config python qt libevent qrencode protobuf hidapi librsvg sqlite berkeley-db@4  
