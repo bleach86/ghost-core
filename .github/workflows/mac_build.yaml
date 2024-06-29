@@ -28,6 +28,7 @@ jobs:
       run: |
         curl -L -o mac-os-cross.tar.gz https://github.com/bleach86/ghost-build-tools/releases/download/v0.1.0/mac-os-cross.tar.gz
         tar -xvzf mac-os-cross.tar.gz
+        ls
         export OSX_CROSS_PATH=$(pwd)/
         echo "export OSX_CROSS_PATH=${OSX_CROSS_PATH}" >> $GITHUB_ENV
 
