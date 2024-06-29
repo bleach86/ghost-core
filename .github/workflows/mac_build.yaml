@@ -30,20 +30,12 @@ jobs:
         cd SDKs 
         curl -L -o mac-os-cross.tar.gz https://github.com/bleach86/ghost-build-tools/releases/download/v0.1.0/mac-os-cross.tar.gz
         tar -xzf mac-os-cross.tar.gz
-        export OSX_CROSS_PATH=$(pwd)/
-        echo "export OSX_CROSS_PATH=${OSX_CROSS_PATH}" >> $GITHUB_ENV
         cd ..
-
-    - name: Set up macOS SDK
-      run: |
-        export OSX_SDK_PATH=${OSX_CROSS_PATH}
-        echo "SDK_PATH=${OSX_SDK_PATH}" >> $GITHUB_ENV
-        echo "SDK_PATH=${OSX_SDK_PATH}"
 
     - name: Build dependencies
       run: |
         cd depends
-        make HOST=x86_64-apple-darwin16 SDK_PATH=${OSX_CROSS_PATH} -j$(nproc)
+        make HOST=x86_64-apple-darwin16 SDK_PATH=/home/runner/work/ghost-core/ghost-core/SDKs/ -j$(nproc)
 
     - name: Configure Bitcoin Core
       run: |
