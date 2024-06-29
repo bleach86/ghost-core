@@ -1,0 +1,60 @@
+name: Cross-compile Bitcoin Core for macOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git cmake pkg-config curl python3-setuptools \
+        curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev \
+        libz-dev libbz2-dev python3-setuptools libtinfo5
+
+    - name: Set up osxcross
+      run: |
+        git clone https://github.com/tpoechtrager/osxcross.git
+        cd osxcross
+        ./tools/get_dependencies.sh
+        curl -O https://s3.dockerproject.org/darwin/v2/MacOSX10.11.sdk.tar.xz
+        tar -Jxf MacOSX10.11.sdk.tar.xz -C tarballs/
+        UNATTENDED=yes OSX_VERSION_MIN=10.11 ./build.sh
+        echo 'export PATH=$PATH:$(pwd)/target/bin' >> $GITHUB_ENV
+        echo 'export OSXCROSS_OSX_VERSION_MIN=10.11' >> $GITHUB_ENV
+
+    - name: Set up macOS SDK
+      run: |
+        export OSX_SDK_PATH=$(pwd)/osxcross/target/SDK/MacOSX10.11.sdk
+        echo "SDK_PATH=${OSX_SDK_PATH}" >> $GITHUB_ENV
+        echo "SDK_PATH=${OSX_SDK_PATH}"
+
+    - name: Build dependencies
+      run: |
+        cd depends
+        make HOST=x86_64-apple-darwin16 SDK_PATH=$SDK_PATH -j$(nproc)
+
+    - name: Configure Bitcoin Core
+      run: |
+        ./autogen.sh
+        ./configure --prefix=$PWD/depends/x86_64-apple-darwin16
+
+    - name: Build Bitcoin Core
+      run: make -j$(nproc)
+
+    #- name: Upload artifact
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: bitcoin-core-macos
+    #    path: src/bitcoind
