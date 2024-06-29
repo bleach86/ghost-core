@@ -43,7 +43,7 @@ jobs:
     - name: Build dependencies
       run: |
         cd depends
-        make HOST=x86_64-apple-darwin16 SDK_PATH=$SDK_PATH -j$(nproc)
+        make HOST=x86_64-apple-darwin16 SDK_PATH=${OSX_CROSS_PATH} -j$(nproc)
 
     - name: Configure Bitcoin Core
       run: |
