@@ -40,11 +40,10 @@ jobs:
 
       - name: Download and set up custom macOS cross-compilation tools
         run: |
-          mkdir -p SDKs
-          cd SDKs 
+          mkdir -p ~/SDKs
+          cd ~/SDKs 
           curl -L -o mac-os-cross.tar.gz https://github.com/bleach86/ghost-build-tools/releases/download/v0.1.0/mac-os-cross.tar.gz
           tar -xzf mac-os-cross.tar.gz
-          cd ..
 
       - name: Cache macOS dependencies
         id: cache-dependencies
@@ -56,7 +55,7 @@ jobs:
       - name: Build dependencies
         run: |
           cd depends
-          make HOST=x86_64-apple-darwin16 SDK_PATH=/home/runner/work/ghost-core/SDKs/ -j$(nproc)
+          make HOST=x86_64-apple-darwin16 SDK_PATH=~/SDKs/ -j$(nproc)
 
       - name: Configure Ghost Core
         run: |
