@@ -36,7 +36,7 @@ jobs:
 
     - name: Set up macOS SDK
       run: |
-        export OSX_SDK_PATH=$OSX_CROSS_PATH/
+        export OSX_SDK_PATH=${OSX_CROSS_PATH}
         echo "SDK_PATH=${OSX_SDK_PATH}" >> $GITHUB_ENV
         echo "SDK_PATH=${OSX_SDK_PATH}"
 
