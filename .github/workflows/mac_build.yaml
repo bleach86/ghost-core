@@ -17,7 +17,6 @@ jobs:
 
       - name: Install dependencies
         env:
-          CACHE_HIT: ${{ steps.cache-apt.outputs.cache-hit }}
           DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 git cmake pkg-config curl python3-setuptools curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev libz-dev libbz2-dev libtinfo5 genisoimage
         run: |
 
@@ -44,12 +43,43 @@ jobs:
       - name: Configure Ghost Core
         run: |
           ./autogen.sh
-          CONFIG_SITE=$PWD/depends/x86_64-apple-darwin16/share/config.site ./configure --prefix=/ && \
-          make -j$(nproc) && \
-          make deploy
+          CONFIG_SITE=$PWD/depends/x86_64-apple-darwin16/share/config.site ./configure --prefix=/
 
       - name: Build Ghost Core
+        run: make -j$(nproc) && make deploy
+
+  build-windows:
+    runs-on: ubuntu-20.04
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+  
+      - name: Install dependencies
+        env:
+          DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git nsis g++-mingw-w64-x86-64
+        run: |
+  
+            sudo apt-get update && sudo apt-get install -yq $DEPS
+            mkdir -p ~/apt-cache
+            for dep in $DEPS; do
+              dpkg -L $dep | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ~/apt-cache/
+            done
+     
+  
+      - name: Build dependencies
+        run: |
+          cd depends
+          make HOST=x86_64-w64-mingw32 -j$(nproc)
+  
+      - name: Configure Ghost Core
+        run: |
+          ./autogen.sh
+          CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/
+  
+      - name: Build Ghost Core
         run: make -j$(nproc)
+
 
 
   build-ubuntu:
