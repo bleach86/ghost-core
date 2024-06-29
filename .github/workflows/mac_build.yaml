@@ -35,7 +35,7 @@ jobs:
     - name: Build dependencies
       run: |
         cd depends
-        make HOST=x86_64-apple-darwin16 SDK_PATH=../../SDKs/ -j$(nproc)
+        make HOST=x86_64-apple-darwin16 SDK_PATH=/home/runner/work/ghost-core/SDKs/ -j$(nproc)
 
     - name: Configure Ghost Core
       run: |
