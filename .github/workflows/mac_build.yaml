@@ -23,20 +23,16 @@ jobs:
         curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev \
         libz-dev libbz2-dev python3-setuptools libtinfo5
 
-    - name: Set up osxcross
+    - name: Download and set up custom macOS cross-compilation tools
       run: |
-        git clone https://github.com/tpoechtrager/osxcross.git
-        cd osxcross
-        sudo ./tools/get_dependencies.sh
-        curl -O https://s3.dockerproject.org/darwin/v2/MacOSX11.3.sdk.tar.xz
-        tar -Jxf MacOSX11.3.sdk.tar.xz -C tarballs/
-        UNATTENDED=yes SDK_VERSION=11.3 OSX_VERSION_MIN=11.3 ./build.sh
-        echo 'export PATH=$PATH:$(pwd)/target/bin' >> $GITHUB_ENV
-        echo 'export OSXCROSS_OSX_VERSION_MIN=11.3' >> $GITHUB_ENV
+        curl -L -o mac-os-cross.tar.gz https://github.com/bleach86/ghost-build-tools/releases/download/v0.1.0/mac-os-cross.tar.gz
+        tar -xzf mac-os-cross.tar.gz
+        export OSX_CROSS_PATH=$(pwd)/
+        echo "export OSX_CROSS_PATH=${OSX_CROSS_PATH}" >> $GITHUB_ENV
 
     - name: Set up macOS SDK
       run: |
-        export OSX_SDK_PATH=$(pwd)/osxcross/target/SDK/MacOSX11.3.sdk
+        export OSX_SDK_PATH=$OSX_CROSS_PATH/MacOSX.sdk
         echo "SDK_PATH=${OSX_SDK_PATH}" >> $GITHUB_ENV
         echo "SDK_PATH=${OSX_SDK_PATH}"
 
