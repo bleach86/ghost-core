@@ -19,12 +19,7 @@ jobs:
         env:
           DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 git cmake pkg-config curl python3-setuptools curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev libz-dev libbz2-dev libtinfo5 genisoimage
         run: |
-
-            sudo apt-get update && sudo apt-get install -yq $DEPS
-            mkdir -p ~/apt-cache
-            for dep in $DEPS; do
-              dpkg -L $dep | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ~/apt-cache/
-            done
+           sudo apt-get update && sudo apt-get install -yq $DEPS
      
 
       - name: Download and set up custom macOS cross-compilation tools
@@ -59,14 +54,8 @@ jobs:
         env:
           DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git nsis g++-mingw-w64-x86-64
         run: |
-  
             sudo apt-get update && sudo apt-get install -yq $DEPS
-            mkdir -p ~/apt-cache
-            for dep in $DEPS; do
-              dpkg -L $dep | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ~/apt-cache/
-            done
-     
-  
+
       - name: Build dependencies
         run: |
           cd depends
