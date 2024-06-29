@@ -85,8 +85,9 @@ jobs:
       - name: Install dependencies
         env:
           CACHE_HIT: ${{ steps.cache-apt.outputs.cache-hit }}
-          DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git nsis g++-mingw-w64-x86-64
+          DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git nsis g++-mingw-w64-x86-64 x86_64-w64-mingw32-g++
         run: |
+            sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
             if [[ "$CACHE_HIT" == 'true' ]]; then
               sudo cp --force --recursive ~/apt-cache/* /
             else
