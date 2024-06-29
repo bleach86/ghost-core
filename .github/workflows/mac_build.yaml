@@ -21,16 +21,17 @@ jobs:
         id: cache-apt
         with:
           path: ~/apt-cache
-          key: apt-cache
+          key: apt-cache-${{ runner.os }}-${{ hashFiles('**/apt-deps-list.txt') }}
 
       - name: Install dependencies
         env:
           CACHE_HIT: ${{ steps.cache-apt.outputs.cache-hit }}
-          DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 git cmake pkg-config curl python3-setuptools curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev libz-dev libbz2-dev libtinfo5 genisoimage
+          DEPS: build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 git cmake pkg-config curl python3-setuptools librsvg2-bin libtiff-tools imagemagick libcap-dev libz-dev libbz2-dev libtinfo5 genisoimage
         run: |
           if [[ "$CACHE_HIT" == 'true' ]]; then
             sudo cp --force --recursive ~/apt-cache/* /
           else
+            echo $DEPS > apt-deps-list.txt
             sudo apt-get update && sudo apt-get install -yq $DEPS
             mkdir -p ~/apt-cache
             for dep in $DEPS; do
@@ -44,21 +45,19 @@ jobs:
           cd SDKs 
           curl -L -o mac-os-cross.tar.gz https://github.com/bleach86/ghost-build-tools/releases/download/v0.1.0/mac-os-cross.tar.gz
           tar -xzf mac-os-cross.tar.gz
+          cd ..
 
-      - name: Cache dependencies
+      - name: Cache macOS dependencies
         id: cache-dependencies
         uses: actions/cache@v2
         with:
-          path: |
-            depends/x86_64-apple-darwin16
+          path: depends/x86_64-apple-darwin16
           key: macos-deps-${{ hashFiles('depends/packages/*.mk') }}
 
       - name: Build dependencies
         run: |
           cd depends
           make HOST=x86_64-apple-darwin16 SDK_PATH=/home/runner/work/ghost-core/SDKs/ -j$(nproc)
-
-      
 
       - name: Configure Ghost Core
         run: |
