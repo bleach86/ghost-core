@@ -22,7 +22,7 @@ jobs:
         sudo apt-get install -y build-essential libtool autotools-dev automake \
         pkg-config bsdmainutils python3 git cmake pkg-config curl python3-setuptools \
         curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev \
-        libz-dev libbz2-dev libtinfo5
+        libz-dev libbz2-dev libtinfo5 genisoimage
 
     - name: Download and set up custom macOS cross-compilation tools
       run: |
