@@ -48,7 +48,9 @@ jobs:
     - name: Configure Bitcoin Core
       run: |
         ./autogen.sh
-        ./configure --prefix=$PWD/depends/x86_64-apple-darwin16
+        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin16/share/config.site ./configure --prefix=/ && \
+        make -j$(nproc) && \
+        make deploy
 
     - name: Build Bitcoin Core
       run: make -j$(nproc)
