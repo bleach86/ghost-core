@@ -28,9 +28,9 @@ jobs:
         git clone https://github.com/tpoechtrager/osxcross.git
         cd osxcross
         sudo ./tools/get_dependencies.sh
-        curl -O https://s3.dockerproject.org/darwin/v2/MacOSX10.11.sdk.tar.xz
+        curl -O https://s3.dockerproject.org/darwin/v2/MacOSX11.3.sdk.tar.xz
         tar -Jxf MacOSX10.11.sdk.tar.xz -C tarballs/
-        UNATTENDED=yes SDK_VERSION=10.11 OSX_VERSION_MIN=10.11 ./build.sh
+        UNATTENDED=yes SDK_VERSION=11.3 OSX_VERSION_MIN=11.3 ./build.sh
         echo 'export PATH=$PATH:$(pwd)/target/bin' >> $GITHUB_ENV
         echo 'export OSXCROSS_OSX_VERSION_MIN=10.11' >> $GITHUB_ENV
 
