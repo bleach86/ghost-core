@@ -32,7 +32,7 @@ jobs:
         tar -Jxf MacOSX11.3.sdk.tar.xz -C tarballs/
         UNATTENDED=yes SDK_VERSION=11.3 OSX_VERSION_MIN=11.3 ./build.sh
         echo 'export PATH=$PATH:$(pwd)/target/bin' >> $GITHUB_ENV
-        echo 'export OSXCROSS_OSX_VERSION_MIN=10.11' >> $GITHUB_ENV
+        echo 'export OSXCROSS_OSX_VERSION_MIN=11.3' >> $GITHUB_ENV
 
     - name: Set up macOS SDK
       run: |
