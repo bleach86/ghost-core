@@ -97,7 +97,7 @@ jobs:
         run: |
           cd depends
           if [ "${{ matrix.target }}" == "arm-linux-gnueabihf" ]; then
-            make HOST=${{ matrix.target }} NO_GUI=1 -j$(nproc)
+            make HOST=${{ matrix.target }} NO_QT=1 -j$(nproc)
           else
             make HOST=${{ matrix.target }} SDK_PATH=~/SDKs/ -j$(nproc)
           fi
