@@ -164,7 +164,7 @@ jobs:
           distro: ubuntu22.04
           shell: bash
           run: |
-            chmod +x .artifacts/${{ matrix.target }}/test_ghost
+            chmod +x ./artifacts/${{ matrix.target }}/test_ghost
             ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
 
       - name: Run tests on Linux
