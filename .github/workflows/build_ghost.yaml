@@ -96,7 +96,11 @@ jobs:
       - name: Build dependencies
         run: |
           cd depends
-          make HOST=${{ matrix.target }} SDK_PATH=~/SDKs/ -j$(nproc)
+          if [ "${{ matrix.target }}" == "arm-linux-gnueabihf" ]; then
+            make HOST=${{ matrix.target }} NO_GUI=1 -j$(nproc)
+          else
+            make HOST=${{ matrix.target }} SDK_PATH=~/SDKs/ -j$(nproc)
+          fi
 
       - name: Refresh automake configs
         run: ./autogen.sh
