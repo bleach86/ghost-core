@@ -162,10 +162,12 @@ jobs:
         with:
           arch: ${{ matrix.target == 'aarch64-linux-gnu' && 'aarch64' || 'armv7' }}
           distro: ubuntu22.04
-          shell: bash
+          githubToken: ${{ github.token }}
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts/${{ matrix.target }}/:/artifacts"
           run: |
-            chmod +x ./artifacts/${{ matrix.target }}/test_ghost
-            ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
+            chmod +x /artifacts/${{ matrix.target }}/test_ghost
+            /artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
 
       - name: Run tests on Linux
         if: matrix.target == 'x86_64-linux-gnu'
