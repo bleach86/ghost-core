@@ -136,11 +136,15 @@ jobs:
 
       - name: Run tests on Linux
         if: matrix.test_os == 'ubuntu-latest'
-        run: ./artifacts/test_ghost -l all
+        run: |
+          sudo chown $USER:$USER ./artifacts/test_ghost
+          ./artifacts/test_ghost -l all
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
-        run: ./artifacts/test_ghost -l all
+        run: |
+          sudo chown $USER ./artifacts/test_ghost
+          ./artifacts/test_ghost -l all
 
       - name: Run tests on Windows
         if: matrix.test_os == 'windows-latest'
