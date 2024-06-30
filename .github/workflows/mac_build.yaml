@@ -47,7 +47,11 @@ jobs:
           DEPS: ${{ matrix.deps }}
         run: |
           if [[ "$CACHE_HIT" == 'true' ]]; then
-            sudo rsync -a ~/apt-cache/ /
+            find ~/apt-cache -type f | while read file; do
+              dest="${file/\/home\/runner\/apt-cache/}"
+              sudo mkdir -p "$(dirname "$dest")"
+              sudo cp -f "$file" "$dest"
+            done
           else
             sudo apt-get update && sudo apt-get install -yq $DEPS
             mkdir -p ~/apt-cache
