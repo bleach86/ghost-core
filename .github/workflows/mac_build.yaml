@@ -47,7 +47,7 @@ jobs:
           DEPS: ${{ matrix.deps }}
         run: |
           if [[ "$CACHE_HIT" == 'true' ]]; then
-            sudo cp --force --recursive ~/apt-cache/* /
+            sudo rsync -a ~/apt-cache/ /
           else
             sudo apt-get update && sudo apt-get install -yq $DEPS
             mkdir -p ~/apt-cache
