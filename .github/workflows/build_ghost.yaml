@@ -36,7 +36,7 @@ jobs:
             deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git automake cmake curl libtool binutils-gold bsdmainutils pkg-config python3 patch g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
           - os: ubuntu-20.04
-            target: armv7-linux-gnueabihf
+            target: arm-linux-gnueabihf
             cache-key: armv7-deps
             deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git automake cmake curl libtool binutils-gold bsdmainutils pkg-config python3 patch g++-arm-linux-gnueabihf binutils-arm-linux-gnueabihf
             
