@@ -58,6 +58,13 @@ jobs:
           CACHE_HIT: ${{ steps.cache-apt.outputs.cache-hit }}
           DEPS: ${{ matrix.deps }}
         run: |
+          # Always install ARM build tools if target is ARM architecture
+          if [[ "${{ matrix.target }}" == 'arm-linux-gnueabihf' ]]; then
+            sudo apt-get update && sudo apt-get install -yq g++-arm-linux-gnueabihf binutils-arm-linux-gnueabihf
+          elif [[ "${{ matrix.target }}" == 'aarch64-linux-gnu' ]]; then
+            sudo apt-get update && sudo apt-get install -yq g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
+          fi
+      
           if [[ "$CACHE_HIT" == 'true' ]]; then
             find ~/apt-cache -type f | while read file; do
               dest="${file/\/home\/runner\/apt-cache/}"
@@ -70,14 +77,6 @@ jobs:
             for dep in $DEPS; do
               dpkg -L $dep | while IFS= read -r f; do if test -f "$f"; then echo $f; fi; done | xargs cp --parents --target-directory ~/apt-cache/ || true
             done
-          fi
-          
-          if [[ "${{ matrix.target }}" == 'armv7-linux-gnueabihf' ]]; then
-            sudo apt-get update && sudo apt-get install -yq g++-arm-linux-gnueabihf binutils-arm-linux-gnueabihf
-          fi
-      
-          if [[ "${{ matrix.target }}" == 'aarch64-linux-gnu' ]]; then
-            sudo apt-get update && sudo apt-get install -yq g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
           fi
 
       - name: Cache dependencies
