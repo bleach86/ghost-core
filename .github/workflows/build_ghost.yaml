@@ -161,7 +161,7 @@ jobs:
             .artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
 
       - name: Run tests on Linux
-        if: matrix.test_os == 'ubuntu-latest'
+        if: matrix.target == 'x86_64-linux-gnu'
         run: |
           chmod +x ./artifacts/${{ matrix.target }}/test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
