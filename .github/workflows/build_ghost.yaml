@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04]
         target: [x86_64-linux-gnu, x86_64-apple-darwin16, x86_64-w64-mingw32]
@@ -113,6 +114,7 @@ jobs:
     needs: build
     runs-on: ${{ matrix.test_os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - target: x86_64-linux-gnu
@@ -137,14 +139,12 @@ jobs:
       - name: Run tests on Linux
         if: matrix.test_os == 'ubuntu-latest'
         run: |
-          sudo chown $USER:$USER ./artifacts/test_ghost
-          ./artifacts/test_ghost -l all
+          sudo ./artifacts/test_ghost -l all
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
         run: |
-          sudo chown $USER ./artifacts/test_ghost
-          ./artifacts/test_ghost -l all
+          sudo ./artifacts/test_ghost -l all
 
       - name: Run tests on Windows
         if: matrix.test_os == 'windows-latest'
