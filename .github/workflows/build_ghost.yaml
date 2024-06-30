@@ -135,6 +135,10 @@ jobs:
             test_os: macos-latest
           - target: x86_64-w64-mingw32
             test_os: windows-latest
+          - target: aarch64-linux-gnu
+            test_os: ubuntu-latest
+          - target: arm-linux-gnueabihf
+            test_os: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -144,6 +148,17 @@ jobs:
         with:
           name: test_ghost-${{ matrix.target }}
           path: ./artifacts/${{ matrix.target }}
+
+      - name: Run tests on ARM architecture
+        if: matrix.target == 'aarch64-linux-gnu' || matrix.target == 'arm-linux-gnueabihf'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.target == 'aarch64-linux-gnu' && 'aarch64' || 'armv7l' }}
+          distro: ubuntu20.04
+          shell: bash
+          run: |
+            chmod +x .artifacts/${{ matrix.target }}/test_ghost
+            .artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
 
       - name: Run tests on Linux
         if: matrix.test_os == 'ubuntu-latest'
