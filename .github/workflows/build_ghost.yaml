@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Cache apt dependencies
         uses: actions/cache@v2
@@ -134,13 +134,13 @@ jobs:
         if: matrix.test_os == 'ubuntu-latest'
         run: |
           chmod +x ./artifacts/${{ matrix.target }}/test_ghost
-          ./artifacts/${{ matrix.target }}/test_ghost -l error -r detailed
+          ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
         run: |
           chmod +x ./artifacts/${{ matrix.target }}/test_ghost
-          ./artifacts/${{ matrix.target }}/test_ghost -l error -r detailed
+          ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
 
       - name: Run tests on Windows
         if: matrix.test_os == 'windows-latest'
