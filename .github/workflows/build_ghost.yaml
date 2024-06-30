@@ -139,11 +139,13 @@ jobs:
       - name: Run tests on Linux
         if: matrix.test_os == 'ubuntu-latest'
         run: |
+          chmod +x ./artifacts/${{ matrix.target }}/test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l all
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
         run: |
+          chmod +x ./artifacts/${{ matrix.target }}/test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l all
 
       - name: Run tests on Windows
