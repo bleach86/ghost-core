@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cache apt dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache-apt
         with:
           path: ~/apt-cache
@@ -102,7 +102,7 @@ jobs:
         run: make deploy
 
       - name: Upload test binary
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test_ghost-${{ matrix.target }}
           path: src/test/test_ghost*
@@ -122,10 +122,10 @@ jobs:
             test_os: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download test binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: test_ghost-${{ matrix.target }}
           path: ./artifacts/${{ matrix.target }}
