@@ -160,7 +160,7 @@ jobs:
         if: matrix.target == 'aarch64-linux-gnu' || matrix.target == 'arm-linux-gnueabihf'
         uses: uraimo/run-on-arch-action@v2
         with:
-          arch: ${{ matrix.target == 'aarch64-linux-gnu' && 'aarch64' || 'armv7l' }}
+          arch: ${{ matrix.target == 'aarch64-linux-gnu' && 'aarch64' || 'armv7' }}
           distro: ubuntu20.04
           shell: bash
           run: |
