@@ -21,14 +21,17 @@ jobs:
             target: x86_64-linux-gnu
             cache-key: ubuntu-deps
             deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git ca-certificates ccache libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools
+            test_os: ubuntu-latest
           - os: ubuntu-20.04
             target: x86_64-apple-darwin16
             cache-key: macos-deps
             deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 git cmake pkg-config curl python3-setuptools librsvg2-bin libtiff-tools imagemagick libcap-dev libz-dev libbz2-dev libtinfo5 genisoimage
+            test_os: macos-latest
           - os: ubuntu-20.04
             target: x86_64-w64-mingw32
             cache-key: windows-deps
             deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git g++-mingw-w64-x86-64
+            test_os: windows-latest
 
     steps:
       - name: Checkout code
@@ -108,11 +111,19 @@ jobs:
 
   test:
     needs: build
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.test_os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
+        include:
+          - target: x86_64-linux-gnu
+            os: ubuntu-latest
+            test_os: ubuntu-latest
+          - target: x86_64-apple-darwin16
+            os: ubuntu-20.04
+            test_os: macos-latest
+          - target: x86_64-w64-mingw32
+            os: ubuntu-20.04
+            test_os: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -124,13 +135,13 @@ jobs:
           path: ./artifacts
 
       - name: Run tests on Linux
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.test_os == 'ubuntu-latest'
         run: ./artifacts/test_ghost -l all
 
       - name: Run tests on macOS
-        if: matrix.os == 'macos-latest'
+        if: matrix.test_os == 'macos-latest'
         run: ./artifacts/test_ghost -l all
 
       - name: Run tests on Windows
-        if: matrix.os == 'windows-latest'
-        run: ./artifacts/test_ghost.exe -l all 
+        if: matrix.test_os == 'windows-latest'
+        run: ./artifacts/test_ghost.exe -l all
