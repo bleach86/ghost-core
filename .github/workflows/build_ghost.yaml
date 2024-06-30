@@ -30,6 +30,10 @@ jobs:
             target: x86_64-w64-mingw32
             cache-key: windows-deps
             deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git nsis g++-mingw-w64-x86-64
+          - os: ubuntu-20.04
+            target: aarch64-linux-gnu
+            cache-key: aarch64-deps
+            deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git automake cmake curl libtool binutils-gold bsdmainutils pkg-config python3 patch g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
     steps:
       - name: Checkout code
