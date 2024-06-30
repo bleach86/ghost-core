@@ -134,18 +134,18 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: test_ghost-${{ matrix.target }}
-          path: ./artifacts
+          path: ./artifacts/${{ matrix.target }}
 
       - name: Run tests on Linux
         if: matrix.test_os == 'ubuntu-latest'
         run: |
-          sudo ./artifacts/test_ghost -l all
+          ./artifacts/${{ matrix.target }}/test_ghost -l all
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
         run: |
-          sudo ./artifacts/test_ghost -l all
+          ./artifacts/${{ matrix.target }}/test_ghost -l all
 
       - name: Run tests on Windows
         if: matrix.test_os == 'windows-latest'
-        run: ./artifacts/test_ghost.exe -l all
+        run: ./artifacts/${{ matrix.target }}/test_ghost.exe -l all
