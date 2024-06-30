@@ -29,7 +29,7 @@ jobs:
           - os: ubuntu-20.04
             target: x86_64-w64-mingw32
             cache-key: windows-deps
-            deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git g++-mingw-w64-x86-64
+            deps: build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git nsis g++-mingw-w64-x86-64
 
     steps:
       - name: Checkout code
@@ -98,7 +98,7 @@ jobs:
         run: make -j$(nproc)
 
       - name: Package Ghost Core
-        if: matrix.target == 'x86_64-apple-darwin16'
+        if: matrix.target == 'x86_64-apple-darwin16' || matrix.target == 'x86_64-w64-mingw32'
         run: make deploy
 
       - name: Upload test binary
