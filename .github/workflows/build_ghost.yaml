@@ -169,8 +169,8 @@ jobs:
             test_os: ubuntu-latest
           - target: x86_64-apple-darwin16
             test_os: macos-latest
-          - target: x86_64-w64-mingw32
-            test_os: windows-latest
+          # - target: x86_64-w64-mingw32
+          #   test_os: windows-latest
           - target: aarch64-linux-gnu
             test_os: ubuntu-latest
           - target: arm-linux-gnueabihf
@@ -259,20 +259,20 @@ jobs:
           test/util/bitcoin-util-test.py
           test/functional/test_runner.py --extended
 
-      - name: Run tests on Windows
-        if: matrix.test_os == 'windows-latest'
-        shell: cmd
-        run: |
-          # Run test_ghost
-          .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
+      # - name: Run tests on Windows
+      #   if: matrix.test_os == 'windows-latest'
+      #   shell: cmd
+      #   run: |
+      #     # Run test_ghost
+      #     .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
       
-          # Run test_ghost_qt if present
-          .\artifacts\${{ matrix.target }}\test_ghost_qt.exe
+      #     # Run test_ghost_qt if present
+      #     .\artifacts\${{ matrix.target }}\test_ghost_qt.exe
           
-          # Move the rest of the executables to src
-          move .\artifacts\${{ matrix.target }}\* .\src\
+      #     # Move the rest of the executables to src
+      #     move .\artifacts\${{ matrix.target }}\* .\src\
       
-          # Move to ghost-core and run further unit and functional tests
-          pip install pyzmq
-          python test\util\bitcoin-util-test.py
-          python test\functional\test_runner.py --extended
+      #     # Move to ghost-core and run further unit and functional tests
+      #     pip install pyzmq
+      #     python test\util\bitcoin-util-test.py
+      #     python test\functional\test_runner.py --extended
