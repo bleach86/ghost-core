@@ -210,7 +210,7 @@ jobs:
         
             # Run test_ghost_qt if present
             if [ -f /artifacts/test_ghost_qt ]; then
-              /artifacts/test_ghost_qt
+              /artifacts/test_ghost-qt
             fi
         
             # Move the rest of the executables to /ghost-core/src
@@ -231,7 +231,7 @@ jobs:
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
       
           # Run test_ghost_qt
-          ./artifacts/${{ matrix.target }}/test_ghost_qt
+          ./artifacts/${{ matrix.target }}/test_ghost-qt
 
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
@@ -251,7 +251,7 @@ jobs:
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
       
           # Run test_ghost_qt
-          ./artifacts/${{ matrix.target }}/test_ghost_qt
+          ./artifacts/${{ matrix.target }}/test_ghost-qt
 
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
@@ -269,7 +269,7 @@ jobs:
       #     .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
       
       #     # Run test_ghost_qt if present
-      #     .\artifacts\${{ matrix.target }}\test_ghost_qt.exe
+      #     .\artifacts\${{ matrix.target }}\test_ghost-qt.exe
           
       #     # Move the rest of the executables to src
       #     move .\artifacts\${{ matrix.target }}\* .\src\
