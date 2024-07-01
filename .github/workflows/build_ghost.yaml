@@ -125,17 +125,32 @@ jobs:
         run: make deploy
       
       - name: Upload test binary
+        if: matrix.target != 'x86_64-w64-mingw32'
         uses: actions/upload-artifact@v4
         with:
           name: test_ghost-${{ matrix.target }}
           path: |
-            src/test/test_ghost${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
-            ${{ matrix.target != 'arm-linux-gnueabihf' && 'src/qt/test/test_ghost-qt' || '' }}${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
-            src/ghostd${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
-            src/ghost-wallet${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
-            src/ghost-cli${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
-            src/ghost-wallet${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
-            src/ghost-tx${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            src/test/test_ghost
+            src/qt/test/test_ghost-qt
+            src/ghostd
+            src/ghost-wallet
+            src/ghost-cli
+            src/ghost-wallet
+            src/ghost-tx
+
+      - name: Upload test binary Windows
+        if: matrix.target == 'x86_64-w64-mingw32'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test_ghost-${{ matrix.target }}
+          path: |
+            src/test/test_ghost.exe
+            src/qt/test/test_ghost-qt.exe
+            src/ghostd.exe
+            src/ghost-wallet.exe
+            src/ghost-cli.exe
+            src/ghost-wallet.exe
+            src/ghost-tx.exe
 
 
   test:
