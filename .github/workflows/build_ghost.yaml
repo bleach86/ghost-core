@@ -230,7 +230,7 @@ jobs:
           mv ./artifacts/${{ matrix.target }}/* ./src/
       
           # Move to ghost-core/test and run further unit and functional tests
-          sudo apt instal python3-zmq
+          sudo apt install python3-zmq
           test/util/bitcoin-util-test.py
           test/functional/test_runner.py --extended
 
