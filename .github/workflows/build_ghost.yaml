@@ -123,34 +123,39 @@ jobs:
       - name: Package Ghost Core
         if: matrix.target == 'x86_64-apple-darwin16' || matrix.target == 'x86_64-w64-mingw32'
         run: make deploy
+
+      - name: Move test artifacts
+        if: matrix.target != 'x86_64-w64-mingw32'
+        run: |
+          mkdir -p artifacts
+          cp -r src/test/test_ghost artifacts/
+          cp -r src/qt/test/test_ghost-qt artifacts/
+          cp -r src/ghostd artifacts/
+          cp -r src/ghost-wallet artifacts/
+          cp -r src/ghost-cli artifacts/
+          cp -r src/ghost-wallet artifacts/
+          cp -r src/ghost-tx artifacts/
       
       - name: Upload test binary
         if: matrix.target != 'x86_64-w64-mingw32'
         uses: actions/upload-artifact@v4
         with:
           name: test_ghost-${{ matrix.target }}
-          path: |
-            src/test/test_ghost
-            src/qt/test/test_ghost-qt
-            src/ghostd
-            src/ghost-wallet
-            src/ghost-cli
-            src/ghost-wallet
-            src/ghost-tx
+          path: artifacts/*
 
-      - name: Upload test binary Windows
-        if: matrix.target == 'x86_64-w64-mingw32'
-        uses: actions/upload-artifact@v4
-        with:
-          name: test_ghost-${{ matrix.target }}
-          path: |
-            src/test/test_ghost.exe
-            src/qt/test/test_ghost-qt.exe
-            src/ghostd.exe
-            src/ghost-wallet.exe
-            src/ghost-cli.exe
-            src/ghost-wallet.exe
-            src/ghost-tx.exe
+      # - name: Upload test binary Windows
+      #   if: matrix.target == 'x86_64-w64-mingw32'
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: test_ghost-${{ matrix.target }}
+      #     path: |
+      #       src/test/test_ghost.exe
+      #       src/qt/test/test_ghost-qt.exe
+      #       src/ghostd.exe
+      #       src/ghost-wallet.exe
+      #       src/ghost-cli.exe
+      #       src/ghost-wallet.exe
+      #       src/ghost-tx.exe
 
 
   test:
