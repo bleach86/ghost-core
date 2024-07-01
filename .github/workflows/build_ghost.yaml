@@ -123,12 +123,20 @@ jobs:
       - name: Package Ghost Core
         if: matrix.target == 'x86_64-apple-darwin16' || matrix.target == 'x86_64-w64-mingw32'
         run: make deploy
-
+      
       - name: Upload test binary
         uses: actions/upload-artifact@v4
         with:
           name: test_ghost-${{ matrix.target }}
-          path: src/test/test_ghost*
+          path: |
+            src/test/test_ghost${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            ${{ matrix.target != 'arm-linux-gnueabihf' && 'src/qt/test/test_ghost-qt' || '' }}${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            src/ghostd${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            src/ghost-wallet${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            src/ghost-cli${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            src/ghost-wallet${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+            src/ghost-tx${{ matrix.target == 'x86_64-w64-mingw32' && '.exe' || '' }}
+
 
   test:
     needs: build
@@ -166,22 +174,84 @@ jobs:
           githubToken: ${{ github.token }}
           dockerRunArgs: |
             --volume "${PWD}/artifacts/${{ matrix.target }}/:/artifacts"
+            --volume "${PWD}/:/ghost-core"
+          install: |
+                apt-get update -q -y
+                apt-get install -q -y python3 python3-pip
+
           run: |
-            chmod +x /artifacts/test_ghost
+            pip3 install pyzmq
+
+            # Make all files executable
+            chmod +x /artifacts/*
+        
+            # Run test_ghost
             /artifacts/test_ghost -l test_suite -r detailed
+        
+            # Run test_ghost_qt if present
+            if [ -f /artifacts/test_ghost_qt ]; then
+              /artifacts/test_ghost_qt
+            fi
+        
+            # Move the rest of the executables to /ghost-core/src
+            mv /artifacts/* /ghost-core/src/
+        
+            # Move to ghost-core/test and run further unit and functional tests
+            cd /ghost-core/
+            test/util/bitcoin-util-test.py
+            test/functional/test_runner.py --extended
 
       - name: Run tests on Linux
         if: matrix.target == 'x86_64-linux-gnu'
         run: |
-          chmod +x ./artifacts/${{ matrix.target }}/test_ghost
+          # Make all files executable
+          chmod +x ./artifacts/${{ matrix.target }}/*
+      
+          # Run test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
+      
+          # Run test_ghost_qt
+          ./artifacts/${{ matrix.target }}/test_ghost_qt
+
+          # Move the rest of the executables to src
+          mv ./artifacts/${{ matrix.target }}/* ./src/
+      
+          # Move to ghost-core/test and run further unit and functional tests
+          test/util/bitcoin-util-test.py
+          test/functional/test_runner.py --extended
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
         run: |
-          chmod +x ./artifacts/${{ matrix.target }}/test_ghost
+          # Make all files executable
+          chmod +x ./artifacts/${{ matrix.target }}/*
+      
+          # Run test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
+      
+          # Run test_ghost_qt
+          ./artifacts/${{ matrix.target }}/test_ghost_qt
+
+          # Move the rest of the executables to src
+          mv ./artifacts/${{ matrix.target }}/* ./src/
+      
+          # Move to ghost-core/test and run further unit and functional tests
+          test/util/bitcoin-util-test.py
+          test/functional/test_runner.py --extended
 
       - name: Run tests on Windows
         if: matrix.test_os == 'windows-latest'
-        run: ./artifacts/${{ matrix.target }}/test_ghost.exe -l test_suite -r detailed
+        shell: cmd
+        run: |
+          # Run test_ghost
+          .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
+      
+          # Run test_ghost_qt if present
+          .\artifacts\${{ matrix.target }}\test_ghost_qt.exe
+          
+          # Move the rest of the executables to src
+          move .\artifacts\${{ matrix.target }}\* .\src\
+      
+          # Move to ghost-core and run further unit and functional tests
+          python test\util\bitcoin-util-test.py
+          python test\functional\test_runner.py --extended
