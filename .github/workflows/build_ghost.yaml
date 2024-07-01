@@ -129,7 +129,9 @@ jobs:
         run: |
           mkdir -p artifacts
           cp -r src/test/test_ghost artifacts/
-          cp -r src/qt/test/test_ghost-qt artifacts/
+          if [[ "${{ matrix.target }}" != 'arm-linux-gnueabihf' ]]; then
+            cp -r src/qt/test/test_ghost-qt artifacts/
+          fi
           cp -r src/ghostd artifacts/
           cp -r src/ghost-wallet artifacts/
           cp -r src/ghost-cli artifacts/
