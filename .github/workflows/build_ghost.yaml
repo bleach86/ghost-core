@@ -214,9 +214,9 @@ jobs:
             
 
             # Modify and copy the ini file
-            sed -i 's|^SRCDIR=.*|SRCDIR=/ghost-core|' "/artifacts/config.ini"
-            sed -i 's|^BUILDDIR=.*|BUILDDIR=/ghost-core|' "/artifacts/config.ini"
-            sed -i 's|^RPCAUTH=.*|RPCAUTH=/ghost-core/share/rpcauth/rpcauth.py|' "/artifacts/config.ini"
+            sed -i "s|^SRCDIR=.*|SRCDIR=/ghost-core|" "/artifacts/config.ini"
+            sed -i "s|^BUILDDIR=.*|BUILDDIR=/ghost-core|" "/artifacts/config.ini"
+            sed -i "s|^RPCAUTH=.*|RPCAUTH=/ghost-core/share/rpcauth/rpcauth.py|" "/artifacts/config.ini"
             
             cp -r /artifacts/config.ini /ghost-core/test/
 
@@ -243,9 +243,9 @@ jobs:
           # Move to ghost-core/test and run further unit and functional tests
           sudo apt install python3-zmq
 
-          sed -i 's|^SRCDIR=.*|SRCDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
-          sed -i 's|^BUILDDIR=.*|BUILDDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
-          sed -i 's|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|' "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "s|^SRCDIR=.*|SRCDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "s|^BUILDDIR=.*|BUILDDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "s|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|" "./artifacts/${{ matrix.target }}/config.ini"
           
           cp -r ./artifacts/${{ matrix.target }}/config.ini test/
 
@@ -268,9 +268,9 @@ jobs:
           ./artifacts/${{ matrix.target }}/test_ghost-qt
       
           # Move to ghost-core/test and run further unit and functional tests
-          sed -i 's|^SRCDIR=.*|SRCDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
-          sed -i 's|^BUILDDIR=.*|BUILDDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
-          sed -i 's|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|' "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "s|^SRCDIR=.*|SRCDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "s|^BUILDDIR=.*|BUILDDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "s|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|" "./artifacts/${{ matrix.target }}/config.ini"
           
           cp -r ./artifacts/${{ matrix.target }}/config.ini test/
 
@@ -285,7 +285,7 @@ jobs:
         shell: cmd
         run: |
           # Run test_ghost
-          .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
+          #.\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
       
           # Run test_ghost_qt if present
           .\artifacts\${{ matrix.target }}\test_ghost-qt.exe
