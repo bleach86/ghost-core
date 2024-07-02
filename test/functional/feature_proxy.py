@@ -173,6 +173,10 @@ class ProxyTest(BitcoinTestFramework):
         return rv
 
     def run_test(self):
+        self.log.info("Check for ARM CI")
+        if os.getenv("ARM_CI") is not None:
+            raise SkipTest("This test cannot be run in CI on ARM/ARM64.")
+        
         # basic -proxy
         self.node_test(self.nodes[0], [self.serv1, self.serv1, self.serv1, self.serv1], False)
 
