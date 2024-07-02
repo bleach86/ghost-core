@@ -225,7 +225,7 @@ jobs:
             
             # Move to ghost-core and run further unit and functional tests
             cd /ghost-core/
-            #test/util/bitcoin-util-test.py
+            test/util/bitcoin-util-test.py
             test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on Linux
@@ -252,7 +252,7 @@ jobs:
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
           
-          #test/util/bitcoin-util-test.py
+          test/util/bitcoin-util-test.py
           test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on macOS
@@ -277,7 +277,7 @@ jobs:
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
           
-          #test/util/bitcoin-util-test.py
+          test/util/bitcoin-util-test.py
           test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on Windows
@@ -304,5 +304,5 @@ jobs:
           # Move the rest of the executables to src
           move .\artifacts\${{ matrix.target }}\* .\src\
           
-          #python test\util\bitcoin-util-test.py
+          python test\util\bitcoin-util-test.py
           python test\functional\test_runner.py --bitcoin --ghost
