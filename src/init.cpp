@@ -1206,10 +1206,11 @@ bool AppInitParameterInteraction(const ArgsManager& args)
     }
 
     // if using block pruning, then disallow txindex
-    if (args.GetArg("-prune", 0) && !chainparams.IsTestChain()) {
-        // Disable prune mode until AGVR confilct is resolved.
-        return InitError(_("Prune mode is incompatible with AGVR."));
-        
+    if (args.GetArg("-prune", 0)) {
+        if (!chainparams.IsTestChain()){
+            // Disable prune mode until AGVR confilct is resolved.
+            return InitError(_("Prune mode is incompatible with AGVR."));
+        }
         if (args.GetBoolArg("-txindex", DEFAULT_TXINDEX))
             return InitError(_("Prune mode is incompatible with -txindex."));
         if (!g_enabled_filter_types.empty()) {
