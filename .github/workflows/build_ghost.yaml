@@ -169,8 +169,8 @@ jobs:
             test_os: ubuntu-latest
           - target: x86_64-apple-darwin16
             test_os: macos-latest
-          # - target: x86_64-w64-mingw32
-          #   test_os: windows-latest
+          - target: x86_64-w64-mingw32
+            test_os: windows-latest
           - target: aarch64-linux-gnu
             test_os: ubuntu-latest
           - target: arm-linux-gnueabihf
@@ -268,9 +268,9 @@ jobs:
           ./artifacts/${{ matrix.target }}/test_ghost-qt
       
           # Move to ghost-core/test and run further unit and functional tests
-          sed -i "s|^SRCDIR=.*|SRCDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
-          sed -i "s|^BUILDDIR=.*|BUILDDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
-          sed -i "s|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "" "s|^SRCDIR=.*|SRCDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "" "s|^BUILDDIR=.*|BUILDDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i "" "s|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|" "./artifacts/${{ matrix.target }}/config.ini"
           
           cp -r ./artifacts/${{ matrix.target }}/config.ini test/
 
