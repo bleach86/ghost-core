@@ -229,6 +229,7 @@ jobs:
             # Move to ghost-core and run further unit and functional tests
             cd /ghost-core/
 
+            export ARM_CI=true 
             echo "Running Ghost util tests"
             test/util/bitcoin-util-test.py
 
