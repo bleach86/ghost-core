@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test running bitcoind with the -rpcbind and -rpcallowip options."""
 
-import sys
+import sys, os
 
 from test_framework.netutil import all_interfaces, addr_to_hex, get_bind_addrs, test_ipv6_local
 from test_framework.test_framework import BitcoinTestFramework, SkipTest
@@ -64,6 +64,10 @@ class RPCBindTest(BitcoinTestFramework):
         # due to OS-specific network stats queries, this test works only on Linux
         if sum([self.options.run_ipv4, self.options.run_ipv6, self.options.run_nonloopback]) > 1:
             raise AssertionError("Only one of --ipv4, --ipv6 and --nonloopback can be set")
+
+        self.log.info("Check for ARM CI")
+        if os.getenv("ARM_CI") is not None:
+            raise SkipTest("This test cannot be run in CI on ARM/ARM64.")
 
         self.log.info("Check for linux")
         if not sys.platform.startswith('linux'):
