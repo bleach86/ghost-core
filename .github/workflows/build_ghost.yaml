@@ -202,17 +202,20 @@ jobs:
           run: |
             # Make all files executable
             chmod +x /artifacts/*
-        
+
+            echo "Running Ghost Unit Tests"
+            
             # Run test_ghost
             /artifacts/test_ghost -l test_suite -r detailed
         
             # Run test_ghost_qt if present
             if [ -f /artifacts/test_ghost_qt ]; then
+              echo "Running Ghost QT unit tests"
               /artifacts/test_ghost-qt
             fi
-        
-            
 
+            echo "Preparing test config"
+            
             # Modify and copy the ini file
             sed -i "s|^SRCDIR=.*|SRCDIR=/ghost-core|" "/artifacts/config.ini"
             sed -i "s|^BUILDDIR=.*|BUILDDIR=/ghost-core|" "/artifacts/config.ini"
@@ -225,7 +228,11 @@ jobs:
             
             # Move to ghost-core and run further unit and functional tests
             cd /ghost-core/
+
+            echo "Running Ghost util tests"
             test/util/bitcoin-util-test.py
+
+            echo "Running Ghost functional tests"
             test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on Linux
@@ -233,16 +240,19 @@ jobs:
         run: |
           # Make all files executable
           chmod +x ./artifacts/${{ matrix.target }}/*
-      
+
+          echo "Running Ghost Unit Tests"
           # Run test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
-      
+
+          echo "Running Ghost QT unit tests"
           # Run test_ghost_qt
           ./artifacts/${{ matrix.target }}/test_ghost-qt
       
           # Move to ghost-core/test and run further unit and functional tests
           sudo apt install python3-zmq
 
+          echo "Preparing test config"
           sed -i "s|^SRCDIR=.*|SRCDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
           sed -i "s|^BUILDDIR=.*|BUILDDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
           sed -i "s|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|" "./artifacts/${{ matrix.target }}/config.ini"
@@ -252,7 +262,10 @@ jobs:
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
           
+          echo "Running Ghost util tests"
           test/util/bitcoin-util-test.py
+          
+          echo "Running Ghost functional tests"
           test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on macOS
@@ -260,14 +273,17 @@ jobs:
         run: |
           # Make all files executable
           chmod +x ./artifacts/${{ matrix.target }}/*
-      
+
+          echo "Running Ghost Unit Tests"
           # Run test_ghost
           ./artifacts/${{ matrix.target }}/test_ghost -l test_suite -r detailed
       
+          echo "Running Ghost QT unit tests"
           # Run test_ghost_qt
           ./artifacts/${{ matrix.target }}/test_ghost-qt
       
           # Move to ghost-core/test and run further unit and functional tests
+          echo "Preparing test config"
           sed -i "" "s|^SRCDIR=.*|SRCDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
           sed -i "" "s|^BUILDDIR=.*|BUILDDIR=$PWD|" "./artifacts/${{ matrix.target }}/config.ini"
           sed -i "" "s|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|" "./artifacts/${{ matrix.target }}/config.ini"
@@ -276,8 +292,11 @@ jobs:
 
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
-          
+
+          echo "Running Ghost util tests"
           test/util/bitcoin-util-test.py
+          
+          echo "Running Ghost functional tests"
           test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on Windows
@@ -285,15 +304,18 @@ jobs:
         shell: cmd
         run: |
           # Run test_ghost
+          #echo "Running Ghost Unit Tests"
           #.\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
       
-          # Run test_ghost_qt if present
+          # Run test_ghost_qt
+          echo "Running Ghost Unit Tests"
           .\artifacts\${{ matrix.target }}\test_ghost-qt.exe
           
       
           # Move to ghost-core and run further unit and functional tests
 
           # Update config.ini paths
+          echo "Preparing test config"
           powershell -Command "(gc .\artifacts\${{ matrix.target }}\config.ini) -replace '^SRCDIR=.*', 'SRCDIR=%CD%' | Out-File -encoding ASCII .\artifacts\${{ matrix.target }}\config.ini"
           powershell -Command "(gc .\artifacts\${{ matrix.target }}\config.ini) -replace '^BUILDDIR=.*', 'BUILDDIR=%CD%' | Out-File -encoding ASCII .\artifacts\${{ matrix.target }}\config.ini"
           powershell -Command "(gc .\artifacts\${{ matrix.target }}\config.ini) -replace '^RPCAUTH=.*', 'RPCAUTH=%CD%\\share\\rpcauth\\rpcauth.py' | Out-File -encoding ASCII .\artifacts\${{ matrix.target }}\config.ini"
@@ -303,6 +325,9 @@ jobs:
 
           # Move the rest of the executables to src
           move .\artifacts\${{ matrix.target }}\* .\src\
-          
+
+          echo "Running Ghost util tests"
           python test\util\bitcoin-util-test.py
+
+          echo "Running Ghost functional tests"
           python test\functional\test_runner.py --bitcoin --ghost
