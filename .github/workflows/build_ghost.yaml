@@ -135,30 +135,28 @@ jobs:
           cp -r src/ghostd artifacts/
           cp -r src/ghost-wallet artifacts/
           cp -r src/ghost-cli artifacts/
-          cp -r src/ghost-wallet artifacts/
           cp -r src/ghost-tx artifacts/
+          cp -r test/config.ini artifacts/
+      
+      - name: Move test artifacts Windows
+        if: matrix.target == 'x86_64-w64-mingw32'
+        run: |
+          mkdir -p artifacts
+          cp -r src/test/test_ghost.exe artifacts/
+          cp -r src/qt/test/test_ghost-qt.exe artifacts/
+          cp -r src/ghostd.exe artifacts/
+          cp -r src/ghost-wallet.exe artifacts/
+          cp -r src/ghost-cli.exe artifacts/
+          cp -r src/ghost-tx.exe artifacts/
+          cp -r test/config.ini artifacts/
       
       - name: Upload test binary
-        if: matrix.target != 'x86_64-w64-mingw32'
         uses: actions/upload-artifact@v4
         with:
           name: test_ghost-${{ matrix.target }}
           path: artifacts/*
 
-      # - name: Upload test binary Windows
-      #   if: matrix.target == 'x86_64-w64-mingw32'
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test_ghost-${{ matrix.target }}
-      #     path: |
-      #       src/test/test_ghost.exe
-      #       src/qt/test/test_ghost-qt.exe
-      #       src/ghostd.exe
-      #       src/ghost-wallet.exe
-      #       src/ghost-cli.exe
-      #       src/ghost-wallet.exe
-      #       src/ghost-tx.exe
-
+      
 
   test:
     needs: build
@@ -213,13 +211,22 @@ jobs:
               /artifacts/test_ghost-qt
             fi
         
+            
+
+            # Modify and copy the ini file
+            sed -i 's|^SRCDIR=.*|SRCDIR=/ghost-core|' "/artifacts/config.ini"
+            sed -i 's|^BUILDDIR=.*|BUILDDIR=/ghost-core|' "/artifacts/config.ini"
+            sed -i 's|^RPCAUTH=.*|RPCAUTH=/ghost-core/share/rpcauth/rpcauth.py|' "/artifacts/config.ini"
+            
+            cp -r /artifacts/config.ini /ghost-core/test/
+
             # Move the rest of the executables to /ghost-core/src
             mv /artifacts/* /ghost-core/src/
-        
-            # Move to ghost-core/test and run further unit and functional tests
+            
+            # Move to ghost-core and run further unit and functional tests
             cd /ghost-core/
             test/util/bitcoin-util-test.py
-            test/functional/test_runner.py --extended
+            test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on Linux
         if: matrix.target == 'x86_64-linux-gnu'
@@ -232,14 +239,21 @@ jobs:
       
           # Run test_ghost_qt
           ./artifacts/${{ matrix.target }}/test_ghost-qt
-
-          # Move the rest of the executables to src
-          mv ./artifacts/${{ matrix.target }}/* ./src/
       
           # Move to ghost-core/test and run further unit and functional tests
           sudo apt install python3-zmq
+
+          sed -i 's|^SRCDIR=.*|SRCDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i 's|^BUILDDIR=.*|BUILDDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i 's|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|' "./artifacts/${{ matrix.target }}/config.ini"
+          
+          cp -r ./artifacts/${{ matrix.target }}/config.ini test/
+
+          # Move the rest of the executables to src
+          mv ./artifacts/${{ matrix.target }}/* ./src/
+          
           test/util/bitcoin-util-test.py
-          test/functional/test_runner.py --extended
+          test/functional/test_runner.py --bitcoin --ghost
 
       - name: Run tests on macOS
         if: matrix.test_os == 'macos-latest'
@@ -252,29 +266,43 @@ jobs:
       
           # Run test_ghost_qt
           ./artifacts/${{ matrix.target }}/test_ghost-qt
+      
+          # Move to ghost-core/test and run further unit and functional tests
+          sed -i 's|^SRCDIR=.*|SRCDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i 's|^BUILDDIR=.*|BUILDDIR=$PWD|' "./artifacts/${{ matrix.target }}/config.ini"
+          sed -i 's|^RPCAUTH=.*|RPCAUTH=$PWD/share/rpcauth/rpcauth.py|' "./artifacts/${{ matrix.target }}/config.ini"
+          
+          cp -r ./artifacts/${{ matrix.target }}/config.ini test/
 
           # Move the rest of the executables to src
           mv ./artifacts/${{ matrix.target }}/* ./src/
-      
-          # Move to ghost-core/test and run further unit and functional tests
-          pip3 install pyzmq
-          test/util/bitcoin-util-test.py
-          test/functional/test_runner.py --extended
-
-      # - name: Run tests on Windows
-      #   if: matrix.test_os == 'windows-latest'
-      #   shell: cmd
-      #   run: |
-      #     # Run test_ghost
-      #     .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
-      
-      #     # Run test_ghost_qt if present
-      #     .\artifacts\${{ matrix.target }}\test_ghost-qt.exe
           
-      #     # Move the rest of the executables to src
-      #     move .\artifacts\${{ matrix.target }}\* .\src\
+          test/util/bitcoin-util-test.py
+          test/functional/test_runner.py --bitcoin --ghost
+
+      - name: Run tests on Windows
+        if: matrix.test_os == 'windows-latest'
+        shell: cmd
+        run: |
+          # Run test_ghost
+          .\artifacts\${{ matrix.target }}\test_ghost.exe -l test_suite -r detailed
       
-      #     # Move to ghost-core and run further unit and functional tests
-      #     pip install pyzmq
-      #     python test\util\bitcoin-util-test.py
-      #     python test\functional\test_runner.py --extended
+          # Run test_ghost_qt if present
+          .\artifacts\${{ matrix.target }}\test_ghost-qt.exe
+          
+      
+          # Move to ghost-core and run further unit and functional tests
+
+          # Update config.ini paths
+          powershell -Command "(gc .\artifacts\${{ matrix.target }}\config.ini) -replace '^SRCDIR=.*', 'SRCDIR=%CD%' | Out-File -encoding ASCII .\artifacts\${{ matrix.target }}\config.ini"
+          powershell -Command "(gc .\artifacts\${{ matrix.target }}\config.ini) -replace '^BUILDDIR=.*', 'BUILDDIR=%CD%' | Out-File -encoding ASCII .\artifacts\${{ matrix.target }}\config.ini"
+          powershell -Command "(gc .\artifacts\${{ matrix.target }}\config.ini) -replace '^RPCAUTH=.*', 'RPCAUTH=%CD%\\share\\rpcauth\\rpcauth.py' | Out-File -encoding ASCII .\artifacts\${{ matrix.target }}\config.ini"
+          
+          # Copy config.ini to ghost-core/test
+          xcopy .\artifacts\${{ matrix.target }}\config.ini test\ /Y
+
+          # Move the rest of the executables to src
+          move .\artifacts\${{ matrix.target }}\* .\src\
+          
+          python test\util\bitcoin-util-test.py
+          python test\functional\test_runner.py --bitcoin --ghost
